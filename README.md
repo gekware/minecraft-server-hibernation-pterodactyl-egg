@@ -10,7 +10,7 @@
  Documentation at [EBG API](https://docs.ebg.pw/#msh-configgenerator)  
  The Egg install script simply runs:
  ```sh
- curl -o config.json -X GET "https://api.ebg.pw/api/v1/MSH-ConfigGenerator/2-3-3?FileName=${SERVER_JARFILE}&ServerType=${VENDOR}&Version=${MINECRAFT_VERSION}&RAM=${SERVER_MEMORY}&Port=${SERVER_PORT}"
+ curl -o config.json -X GET "https://api.ebg.pw/api/v1/MSH-ConfigGenerator/2-3-3?FileName=${SERVER_JARFILE}&ServerType=${VENDOR}&Version=${MINECRAFT_VERSION}&RAM=${SERVER_MEMORY}&Port=${SERVER_PORT}&StopTime=${TBSES}"
  ```
  
 [Source to the API](https://github.com/EBG-PW/EBG-API-Plugins/tree/master/MinecraftServerHibernationConfigGenerator)  
