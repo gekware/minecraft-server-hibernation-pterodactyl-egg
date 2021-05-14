@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-05-02T17:59:26+02:00",
+    "exported_at": "2021-05-14T21:06:32+02:00",
     "name": "PaperOnDemand",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -19,7 +19,7 @@
     "file_denylist": [],
     "startup": ".\/msh_server.bin",
     "config": {
-        "files": "{\r\n    \"config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"StartServer\": \"java -Xms128M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar serverFileName\",\r\n            \"FileName\": \"{{SERVER_JARFILE}}\"\r\n        }\r\n    }\r\n}",
+        "files": "{\r\n    \"config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"StartServer\": \"java -Xms128M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar serverFileName\",\r\n            \"FileName\": \"{{SERVER_JARFILE}}\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \"listening for new clients to connect on\",\r\n    \"userInteraction\": [\r\n        \"Go to eula.txt for more info.\"\r\n    ]\r\n}",
         "logs": "{}",
         "stop": "^c"
