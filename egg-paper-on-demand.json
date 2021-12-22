@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-08-26T05:26:17+02:00",
+    "exported_at": "2021-12-22T22:31:17+02:00",
     "name": "PaperOnDemand",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -12,6 +12,7 @@
         "eula"
     ],
     "images": [
+        "ghcr.io\/pterodactyl\/yolks:java_17",
         "ghcr.io\/pterodactyl\/yolks:java_16",
         "ghcr.io\/pterodactyl\/yolks:java_11",
         "ghcr.io\/pterodactyl\/yolks:java_8"
