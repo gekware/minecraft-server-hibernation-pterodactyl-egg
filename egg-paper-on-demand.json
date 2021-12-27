@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-12-22T22:31:17+02:00",
+    "exported_at": "2021-12-27T14:22:20+01:00",
     "name": "PaperOnDemand",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -82,7 +82,7 @@
             "name": "MSH-Download URL",
             "description": "Webserver that serves the binary file of MSH",
             "env_variable": "MSH_D_URL",
-            "default_value": "https:\/\/files.bolverblitz.net\/msh\/msh_server.bin",
+            "default_value": "https:\/\/files.bolverblitz.eu\/msh\/msh_server.bin",
             "user_viewable": false,
             "user_editable": false,
             "rules": "nullable|string"
