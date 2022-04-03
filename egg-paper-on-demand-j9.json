@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2022-04-03T08:45:29+02:00",
+    "exported_at": "2022-04-03T08:45:01+02:00",
     "name": "PaperOnDemand New",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -12,10 +12,10 @@
         "eula"
     ],
     "images": [
-        "ghcr.io\/pterodactyl\/yolks:java_17",
-        "ghcr.io\/pterodactyl\/yolks:java_16",
-        "ghcr.io\/pterodactyl\/yolks:java_11",
-        "ghcr.io\/pterodactyl\/yolks:java_8"
+        "ghcr.io\/pterodactyl\/yolks:java_17j9",
+        "ghcr.io\/pterodactyl\/yolks:java_16j9",
+        "ghcr.io\/pterodactyl\/yolks:java_11j9",
+        "ghcr.io\/pterodactyl\/yolks:java_8j9"
     ],
     "file_denylist": [],
     "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -infohibe {{HIB_INFO}} -infostar {{HIB_START}} -file {{SERVER_JARFILE}} -allowKill {{KILL_TIME}} -timeout {{TBSES}} -msparam {{CONST_CHAR}}-Xms128M -Xmx{{SERVER_MEMORY}}M{{CONST_CHAR}}",
