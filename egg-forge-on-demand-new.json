@@ -1,0 +1,157 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2022-10-01T17:10:17+02:00",
+    "name": "ForgeOnDemand New",
+    "author": "bolverblitz@ebg.pw",
+    "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
+    "features": [
+        "eula"
+    ],
+    "docker_images": {
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
+        "Java 17J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_17J9",
+        "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
+        "Java 16J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_16J9"
+    },
+    "file_denylist": [],
+    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -infohibe \\\"{{HIB_INFO}\\\" -infostar \\\"{{HIB_START}}\\\" -file {{SERVER_JARFILE}} -allowKill {{KILL_TIME}} -timeout {{TBSES}} -msparam \\\"-Xms128M -Xmx{{SERVER_MEMORY}}M\\\"",
+    "config": {
+        "files": "{\r\n    \"msh-config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"StartServer\": \"java <Commands.StartServerParam>\",\r\n            \"FileName\": \"{{env.SERVER_JARFILE}}\",\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"Commands.StartServerParam\": \"-Xms256M -Xmx{{server.build.memory}}M -Dterminal.jline=false -Dterminal.ansi=true @unix_args.txt\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"listening for new clients to connect on\"\r\n}",
+        "logs": "{}",
+        "stop": "^c"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Forge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y curl jq\r\n\r\nif [[ ! -d \/mnt\/server ]]; then\r\n  mkdir \/mnt\/server\r\nfi\r\n\r\ncd \/mnt\/server\r\n\r\n# Remove spaces from the version number to avoid issues with curl\r\nFORGE_VERSION=\"$(echo \"$FORGE_VERSION\" | tr -d ' ')\"\r\nMC_VERSION=\"$(echo \"$MC_VERSION\" | tr -d ' ')\"\r\n\r\nif [[ ! -z ${FORGE_VERSION} ]]; then\r\n  DOWNLOAD_LINK=https:\/\/maven.minecraftforge.net\/net\/minecraftforge\/forge\/${FORGE_VERSION}\/forge-${FORGE_VERSION}\r\n  FORGE_JAR=forge-${FORGE_VERSION}*.jar\r\nelse\r\n  JSON_DATA=$(curl -sSL https:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/promotions_slim.json)\r\n\r\n  if [[ \"${MC_VERSION}\" == \"latest\" ]] || [[ \"${MC_VERSION}\" == \"\" ]]; then\r\n    echo -e \"getting latest version of forge.\"\r\n    MC_VERSION=$(echo -e ${JSON_DATA} | jq -r '.promos | del(.\"latest-1.7.10\") | del(.\"1.7.10-latest-1.7.10\") | to_entries[] | .key | select(contains(\"latest\")) | split(\"-\")[0]' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -1)\r\n    BUILD_TYPE=latest\r\n  fi\r\n\r\n  if [[ \"${BUILD_TYPE}\" != \"recommended\" ]] && [[ \"${BUILD_TYPE}\" != \"latest\" ]]; then\r\n    BUILD_TYPE=recommended\r\n  fi\r\n\r\n  echo -e \"minecraft version: ${MC_VERSION}\"\r\n  echo -e \"build type: ${BUILD_TYPE}\"\r\n\r\n  ## some variables for getting versions and things\r\n  FILE_SITE=https:\/\/maven.minecraftforge.net\/net\/minecraftforge\/forge\/\r\n  VERSION_KEY=$(echo -e ${JSON_DATA} | jq -r --arg MC_VERSION \"${MC_VERSION}\" --arg BUILD_TYPE \"${BUILD_TYPE}\" '.promos | del(.\"latest-1.7.10\") | del(.\"1.7.10-latest-1.7.10\") | to_entries[] | .key | select(contains($MC_VERSION)) | select(contains($BUILD_TYPE))')\r\n\r\n  ## locating the forge version\r\n  if [[ \"${VERSION_KEY}\" == \"\" ]] && [[ \"${BUILD_TYPE}\" == \"recommended\" ]]; then\r\n    echo -e \"dropping back to latest from recommended due to there not being a recommended version of forge for the mc version requested.\"\r\n    VERSION_KEY=$(echo -e ${JSON_DATA} | jq -r --arg MC_VERSION \"${MC_VERSION}\" '.promos | del(.\"latest-1.7.10\") | del(.\"1.7.10-latest-1.7.10\") | to_entries[] | .key | select(contains($MC_VERSION)) | select(contains(\"latest\"))')\r\n  fi\r\n\r\n  ## Error if the mc version set wasn't valid.\r\n  if [ \"${VERSION_KEY}\" == \"\" ] || [ \"${VERSION_KEY}\" == \"null\" ]; then\r\n    echo -e \"The install failed because there is no valid version of forge for the version of minecraft selected.\"\r\n    exit 1\r\n  fi\r\n\r\n  FORGE_VERSION=$(echo -e ${JSON_DATA} | jq -r --arg VERSION_KEY \"$VERSION_KEY\" '.promos | .[$VERSION_KEY]')\r\n\r\n  if [[ \"${MC_VERSION}\" == \"1.7.10\" ]] || [[ \"${MC_VERSION}\" == \"1.8.9\" ]]; then\r\n    DOWNLOAD_LINK=${FILE_SITE}${MC_VERSION}-${FORGE_VERSION}-${MC_VERSION}\/forge-${MC_VERSION}-${FORGE_VERSION}-${MC_VERSION}\r\n    FORGE_JAR=forge-${MC_VERSION}-${FORGE_VERSION}-${MC_VERSION}.jar\r\n    if [[ \"${MC_VERSION}\" == \"1.7.10\" ]]; then\r\n      FORGE_JAR=forge-${MC_VERSION}-${FORGE_VERSION}-${MC_VERSION}-universal.jar\r\n    fi\r\n  else\r\n    DOWNLOAD_LINK=${FILE_SITE}${MC_VERSION}-${FORGE_VERSION}\/forge-${MC_VERSION}-${FORGE_VERSION}\r\n    FORGE_JAR=forge-${MC_VERSION}-${FORGE_VERSION}.jar\r\n  fi\r\nfi\r\n\r\n#Adding .jar when not eding by SERVER_JARFILE\r\nif [[ ! $SERVER_JARFILE = *\\.jar ]]; then\r\n  SERVER_JARFILE=\"$SERVER_JARFILE.jar\"\r\nfi\r\n\r\n#Downloading jars\r\necho -e \"Downloading forge version ${FORGE_VERSION}\"\r\necho -e \"Download link is ${DOWNLOAD_LINK}\"\r\n\r\nif [[ ! -z \"${DOWNLOAD_LINK}\" ]]; then\r\n  if curl -sSL --output \/dev\/null --head --fail ${DOWNLOAD_LINK}-installer.jar; then\r\n    echo -e \"installer jar download link is valid.\"\r\n  else\r\n    echo -e \"link is invalid. Exiting now\"\r\n    exit 2\r\n  fi\r\nelse\r\n  echo -e \"no download link provided. Exiting now\"\r\n  exit 3\r\nfi\r\n\r\ncurl -sSL -o installer.jar ${DOWNLOAD_LINK}-installer.jar\r\n\r\n#Checking if downloaded jars exist\r\nif [[ ! -f .\/installer.jar ]]; then\r\n  echo \"!!! Error downloading forge version ${FORGE_VERSION} !!!\"\r\n  exit\r\nfi\r\n\r\nfunction  unix_args {\r\n  echo -e \"Detected Forge 1.17 or newer version. Setting up forge unix args.\"\r\n  ln -sf libraries\/net\/minecraftforge\/forge\/*\/unix_args.txt unix_args.txt\r\n}\r\n\r\n# Delete args to support downgrading\/upgrading\r\nrm -rf libraries\/net\/minecraftforge\/forge\r\nrm unix_args.txt\r\n\r\n#Installing server\r\necho -e \"Installing forge server.\\n\"\r\njava -jar installer.jar --installServer || { echo -e \"install failed using Forge version ${FORGE_VERSION} and Minecraft version ${MINECRAFT_VERSION}\"; exit 4; }\r\n\r\n# Check if we need a symlink for 1.17+ Forge JPMS args\r\nif [[ $MC_VERSION =~ ^1\\.(17|18|19|20|21|22|23) || $FORGE_VERSION =~ ^1\\.(17|18|19|20|21|22|23) ]]; then\r\n  unix_args\r\n\r\n# Check if someone has set MC to latest but overwrote it with older Forge version, otherwise we would have false positives\r\nelif [[ $MC_VERSION == \"latest\" && $FORGE_VERSION =~ ^1\\.(17|18|19|20|21|22|23) ]]; then\r\n  unix_args\r\nelse\r\n  # For versions below 1.17 that ship with jar\r\n  mv $FORGE_JAR $SERVER_JARFILE\r\nfi\r\n\r\necho -e \"Deleting installer.jar file.\\n\"\r\nrm -rf installer.jar\r\n\r\narch=$(uname -m)\r\n\r\nif [[ $arch == x86_64* ]]; then\r\n    echo \"MSH: X64 Architecture\"\r\n    echo -e \"Running curl -o msh_server.bin ${MSH_D_URL}msh_server_new.bin\"\r\n    curl -o msh_server.bin ${MSH_D_URL}msh_server_new.bin\r\n  elif  [[ $arch == aarch64* ]]; then\r\n    echo \"MSH: aarch64 Architecture\"\r\n    echo -e \"Running curl -o msh_server.bin ${MSH_D_URL}msh_server_new-arm64.bin\"\r\n    curl -o msh_server.bin ${MSH_D_URL}msh_server_new-arm64.bin\r\n  elif  [[ $arch == arm* ]]; then\r\n    echo \"MSH: ARM not V8 is not supported...\"\r\n  elif  [[ $arch == unknown* ]]; then\r\n    echo \"MSH: Architecture dedection failed...\"\r\n    return 1\r\n  fi\r\n\r\necho -e \"Running curl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\"\r\n\r\nif [ -f ${SERVER_JARFILE} ]; then\r\n\tmv ${SERVER_JARFILE} ${SERVER_JARFILE}.old\r\nfi\r\n\r\ncurl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\r\n\r\nchmod u+x .\/msh_server.bin\r\n\r\nif [ ! -f server.properties ]; then\r\n    echo -e \"Downloading MC server.properties\"\r\n    curl -o server.properties https:\/\/raw.githubusercontent.com\/parkervcp\/eggs\/master\/minecraft\/java\/server.properties\r\nfi\r\n\r\nif [ ! -f msh-config.json ]; then\r\n    echo -e \"Downloading MSH msh-config.json\"\r\n    curl -o msh-config.json https:\/\/gist.githubusercontent.com\/BolverBlitz\/fa895e8062fcab7dd7a54d768843a261\/raw\/7224a0694a985ba1bff0b4fe9b44f2c79e9b495e\/msh-config.json\r\nfi\r\n\r\nif [[ ! -f server.jar ]]; then\r\n  echo \"DUMMY\" >> .\/server.jar\r\nfi",
+            "container": "openjdk:8-jdk-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Minecraft Version (Releases only)",
+            "description": "The version of minecraft to download. \r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.\r\nThis does not support snapschots, to use a snapshot please download the .jar, rename it server.jar and look up the Minecraft Protocol version and edit config.json.",
+            "env_variable": "MINECRAFT_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Jar File",
+            "description": "The name of the server jarfile to run the server with.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "server.jar",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Download Path",
+            "description": "A URL to use to download a server.jar rather than the ones in the install script. This is not user viewable.",
+            "env_variable": "DL_PATH",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Build Number",
+            "description": "The build number for the paper release.\r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.",
+            "env_variable": "BUILD_NUMBER",
+            "default_value": "latest",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Vendor",
+            "description": "Here you can write any Text that will be displayed as Server Jar in Minecraft",
+            "env_variable": "VENDOR",
+            "default_value": "Paper",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "MSH-Download URL",
+            "description": "Webserver that serves the binary file of MSH",
+            "env_variable": "MSH_D_URL",
+            "default_value": "https:\/\/bolverblitz.de\/files\/",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Wait time for shutdown",
+            "description": "This is the time in seconds the server should stay online without players",
+            "env_variable": "TBSES",
+            "default_value": "120",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "TimeToKill",
+            "description": "This is the time, MSH will kill the server after sending a stop event and \/save-all",
+            "env_variable": "KILL_TIME",
+            "default_value": "30",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Debug Level",
+            "description": "Debug Level for MSH. 1-3, 3 logging everything.",
+            "env_variable": "DEBUG_LVL",
+            "default_value": "3",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:3",
+            "field_type": "text"
+        },
+        {
+            "name": "Hib-Info",
+            "description": "MOTD when the server is currently not running",
+            "env_variable": "HIB_INFO",
+            "default_value": "Currently not working",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:200",
+            "field_type": "text"
+        },
+        {
+            "name": "Hib-Starting",
+            "description": "MOTD when the minecraft server is starting",
+            "env_variable": "HIB_START",
+            "default_value": "Currently not working",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:200",
+            "field_type": "text"
+        },
+        {
+            "name": "Char",
+            "description": "Do not edit this",
+            "env_variable": "CONST_CHAR",
+            "default_value": "&quot;",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string|max:10",
+            "field_type": "text"
+        }
+    ]
+}

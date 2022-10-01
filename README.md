@@ -5,7 +5,7 @@ The EGG auto updates MSH every time you click "Reinstall Server" at your setting
 [MSH-EGG-Deprecated](https://github.com/gekware/minecraft-server-hibernation-pterodactyl-egg/blob/main/deprecated/egg-paper-on-demand.json): The old version of the egg for MSH Versions prior 2.4.6  
 ## Info
  A egg for [MSH](https://github.com/gekware/minecraft-server-hibernation) minecraft server  
- This is a modification of [Parkervcp Minecraft EGG](https://github.com/parkervcp/eggs/tree/master/minecraft/java)  
+ This is a modification of [Parkervcp Minecraft EGG](https://github.com/parkervcp/eggs/tree/master/game_eggs/minecraft/java/paper) and [Parkervcp Forge EGG](https://github.com/parkervcp/eggs/tree/master/game_eggs/minecraft/java/forge/forge)
 ## Description
  This Egg will create a minecraft server that will only run when a player is online, the servers can be started by joining  
  the server and stops when nobody is online.  
