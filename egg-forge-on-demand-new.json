@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-10-01T17:10:17+02:00",
+    "exported_at": "2022-10-17T21:01:23+02:00",
     "name": "ForgeOnDemand New",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -36,7 +36,7 @@
         {
             "name": "Minecraft Version (Releases only)",
             "description": "The version of minecraft to download. \r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.\r\nThis does not support snapschots, to use a snapshot please download the .jar, rename it server.jar and look up the Minecraft Protocol version and edit config.json.",
-            "env_variable": "MINECRAFT_VERSION",
+            "env_variable": "MC_VERSION",
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
