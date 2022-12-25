@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-10-17T21:01:23+02:00",
+    "exported_at": "2022-12-25T17:08:25+01:00",
     "name": "ForgeOnDemand New",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -18,7 +18,7 @@
         "Java 16J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_16J9"
     },
     "file_denylist": [],
-    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -infohibe \\\"{{HIB_INFO}\\\" -infostar \\\"{{HIB_START}}\\\" -file {{SERVER_JARFILE}} -allowKill {{KILL_TIME}} -timeout {{TBSES}} -msparam \\\"-Xms128M -Xmx{{SERVER_MEMORY}}M\\\"",
+    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} PLACEHOLDER -allowKill {{KILL_TIME}} -timeout {{TBSES}} -msparam \\\"-Xms128M -Xmx{{SERVER_MEMORY}}M\\\" $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -SuspendAllow\") -SuspendRefresh {{SUSPEND_REFRESH}}",
     "config": {
         "files": "{\r\n    \"msh-config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"StartServer\": \"java <Commands.StartServerParam>\",\r\n            \"FileName\": \"{{env.SERVER_JARFILE}}\",\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"Commands.StartServerParam\": \"-Xms256M -Xmx{{server.build.memory}}M -Dterminal.jline=false -Dterminal.ansi=true @unix_args.txt\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \"listening for new clients to connect on\"\r\n}",
@@ -100,7 +100,7 @@
             "default_value": "120",
             "user_viewable": true,
             "user_editable": false,
-            "rules": "required|string",
+            "rules": "required|integer|between:0,60000",
             "field_type": "text"
         },
         {
@@ -110,7 +110,7 @@
             "default_value": "30",
             "user_viewable": true,
             "user_editable": false,
-            "rules": "required|string",
+            "rules": "required|integer|between:0,60000",
             "field_type": "text"
         },
         {
@@ -120,7 +120,7 @@
             "default_value": "3",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:3",
+            "rules": "required|integer|between:1,3",
             "field_type": "text"
         },
         {
@@ -128,8 +128,8 @@
             "description": "MOTD when the server is currently not running",
             "env_variable": "HIB_INFO",
             "default_value": "Currently not working",
-            "user_viewable": true,
-            "user_editable": true,
+            "user_viewable": false,
+            "user_editable": false,
             "rules": "required|string|max:200",
             "field_type": "text"
         },
@@ -138,8 +138,8 @@
             "description": "MOTD when the minecraft server is starting",
             "env_variable": "HIB_START",
             "default_value": "Currently not working",
-            "user_viewable": true,
-            "user_editable": true,
+            "user_viewable": false,
+            "user_editable": false,
             "rules": "required|string|max:200",
             "field_type": "text"
         },
@@ -151,6 +151,36 @@
             "user_viewable": false,
             "user_editable": false,
             "rules": "required|string|max:10",
+            "field_type": "text"
+        },
+        {
+            "name": "SuspendAllow",
+            "description": "Specify if minecraft server process can be suspended",
+            "env_variable": "SUSPEND_ALLOW",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "SuspendRefresh",
+            "description": "Specify how often the suspended minecraft server process must be refreshed.",
+            "env_variable": "SUSPEND_REFRESH",
+            "default_value": "30",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:0,60000",
+            "field_type": "text"
+        },
+        {
+            "name": "wlimport",
+            "description": "Specify is minecraft server whitelist should be imported",
+            "env_variable": "WL_IMPORT",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
             "field_type": "text"
         }
     ]
