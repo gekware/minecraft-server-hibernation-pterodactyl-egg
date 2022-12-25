@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-12-25T17:08:25+01:00",
+    "exported_at": "2022-12-25T23:00:34+01:00",
     "name": "PaperOnDemand New",
     "author": "bolverblitz@ebg.pw",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -25,7 +25,7 @@
         "Java 8 Shenandoah": "ghcr.io\/software-noob\/pterodactyl-images:java_8_shenandoah"
     },
     "file_denylist": [],
-    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} PLACEHOLDER -allowKill {{KILL_TIME}} -timeout {{TBSES}} -msparam \\\"-Xms128M -Xmx{{SERVER_MEMORY}}M\\\" $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -SuspendAllow\") -SuspendRefresh {{SUSPEND_REFRESH}}",
+    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} -allowkill {{KILL_TIME}} -timeout {{TBSES}} -SuspendRefresh {{SUSPEND_REFRESH}} $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -SuspendAllow\")",
     "config": {
         "files": "{\r\n    \"msh-config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"Commands.StartServerParam\": \"-Xms256M -Xmx{{server.build.memory}}M\",\r\n            \"FileName\": \"{{env.SERVER_JARFILE}}\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \"listening for new clients to connect on\"\r\n}",
