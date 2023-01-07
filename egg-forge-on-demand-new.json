@@ -4,10 +4,10 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-12-25T23:00:34+01:00",
+    "exported_at": "2023-01-07T15:58:55+01:00",
     "name": "ForgeOnDemand New",
     "author": "bolverblitz@ebg.pw",
-    "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
+    "description": "MSH Egg to support Forge 17+. Use the normal paper egg for older Forge versions!",
     "features": [
         "eula"
     ],
@@ -36,7 +36,7 @@
         {
             "name": "Minecraft Version (Releases only)",
             "description": "The version of minecraft to download. \r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.\r\nThis does not support snapschots, to use a snapshot please download the .jar, rename it server.jar and look up the Minecraft Protocol version and edit config.json.",
-            "env_variable": "MC_VERSION",
+            "env_variable": "MINECRAFT_VERSION",
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
@@ -95,7 +95,7 @@
         },
         {
             "name": "Wait time for shutdown",
-            "description": "This is the time in seconds the server should stay online without players",
+            "description": "The time in seconds msh should leave the minecraft server online without players",
             "env_variable": "TBSES",
             "default_value": "120",
             "user_viewable": true,
@@ -105,7 +105,7 @@
         },
         {
             "name": "TimeToKill",
-            "description": "This is the time, MSH will kill the server after sending a stop event and \/save-all",
+            "description": "There are Plugins that overwrite \/stop so MSH can\u00b4t stop the server, msh will try \/stop. MSH will check the server again after x seconds and if its still running execute a save-all and then kill the server. (Set this high enoth that it dosn\u00b4t false trigger because it can create chunk errors)",
             "env_variable": "KILL_TIME",
             "default_value": "30",
             "user_viewable": true,
@@ -117,7 +117,7 @@
             "name": "Debug Level",
             "description": "Debug Level for MSH. 1-3, 3 logging everything.",
             "env_variable": "DEBUG_LVL",
-            "default_value": "3",
+            "default_value": "1",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|integer|between:1,3",
@@ -125,9 +125,9 @@
         },
         {
             "name": "Hib-Info",
-            "description": "MOTD when the server is currently not running",
+            "description": "MOTD when the server is currently not running (Currently not working)",
             "env_variable": "HIB_INFO",
-            "default_value": "Currently not working",
+            "default_value": "Hibernating",
             "user_viewable": false,
             "user_editable": false,
             "rules": "required|string|max:200",
@@ -135,9 +135,9 @@
         },
         {
             "name": "Hib-Starting",
-            "description": "MOTD when the minecraft server is starting",
+            "description": "MOTD when the minecraft server is starting (Currently not working)",
             "env_variable": "HIB_START",
-            "default_value": "Currently not working",
+            "default_value": "Starting",
             "user_viewable": false,
             "user_editable": false,
             "rules": "required|string|max:200",
@@ -155,7 +155,7 @@
         },
         {
             "name": "SuspendAllow",
-            "description": "Specify if minecraft server process can be suspended",
+            "description": "When set to true (1) msh will not run \/stop, it will hibernate the process. This should free up system memory and put the server into swap (More info: https:\/\/wiki.archlinux.org\/title\/Power_management\/Suspend_and_hibernate)",
             "env_variable": "SUSPEND_ALLOW",
             "default_value": "1",
             "user_viewable": true,
@@ -165,7 +165,7 @@
         },
         {
             "name": "SuspendRefresh",
-            "description": "Specify how often the suspended minecraft server process must be refreshed.",
+            "description": "This value in seconds will toggle the hibernate state because minecraft thinks it ran into some error if it gets hibernated. This value depends on many variables like memory speed, cpu speed\/usage, i\/o wait and the minecraft software beeing used.",
             "env_variable": "SUSPEND_REFRESH",
             "default_value": "30",
             "user_viewable": true,
@@ -175,9 +175,9 @@
         },
         {
             "name": "wlimport",
-            "description": "Specify is minecraft server whitelist should be imported",
+            "description": "When set to true (1) msh will only start the server when a player from the whitelist is trying to connect",
             "env_variable": "WL_IMPORT",
-            "default_value": "1",
+            "default_value": "0",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean",
