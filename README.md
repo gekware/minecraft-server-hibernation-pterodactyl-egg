@@ -25,9 +25,8 @@ The EGG auto updates MSH every time you click "Reinstall Server" at your setting
  1. Setup a HTTPS werbserver with URL.
  2. Write your URL into the variable "MSH-Download URL" (without the filename)
  3. The names of the files MUST be called as follows:
-    - For x86 (64bit): msh_server_new.bin
-    - For ARMv8 (64bit): msh_server_new-arm64.bin  
-  
+    - For x86 (64bit): msh-linux-amd64.bin
+    - For ARMv8 (64bit): msh-linux-arm64.bin 
 If you would like to run the egg on other hardware then look for "arch=$(uname -m)" in the installatiin script and add it below the other archs.
 
 ## Known issues
