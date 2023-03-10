@@ -6,6 +6,8 @@
 - [Host your own binarys](#Host-your-own-binarys)
 - [Known issues](#Known-issues)
 
+Join our [discord server](https://discord.com/invite/guKB6ETeMF)!  
+
 ## Versions
 The EGG auto updates MSH every time you click "Reinstall Server" at your settings tab. However, sometimes stable DEV versions will be used.  
 [MSH-EGG](https://github.com/gekware/minecraft-server-hibernation-pterodactyl-egg/blob/main/egg-paper-on-demand-new): All JAVA Versions (Hotspot, J9 and Shenandoah)  
