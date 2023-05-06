@@ -1,0 +1,167 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2023-05-04T22:32:53+02:00",
+    "name": "Fabric - MSH",
+    "author": "jack111232@gmail.com",
+    "description": "Fabric Egg with support for MSH (minecraft-server-hibernation). \r\nBased on https:\/\/github.com\/gekware\/minecraft-server-hibernation",
+    "features": [
+        "eula"
+    ],
+    "docker_images": {
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
+        "Java 17J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_17J9",
+        "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
+        "Java 16J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_16J9"
+    },
+    "file_denylist": [],
+    "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} -allowkill {{KILL_TIME}} -timeout {{TBSES}} -suspendrefresh {{SUSPEND_REFRESH}} $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -suspendallow\")",
+    "config": {
+        "files": "{\r\n    \"msh-config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"StartServer\": \"java <Commands.StartServerParam>\",\r\n            \"FileName\": \"{{env.SERVER_JARFILE}}\",\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"Commands.StartServerParam\": \"-Xms128M -Xmx{{server.build.memory}}M\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"listening for new clients connections on\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# Fabric MC Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y curl jq unzip dos2unix wget\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\n# Enable snapshots\r\nif [ -z \"$MC_VERSION\" ] || [ \"$MC_VERSION\" == \"latest\" ]; then\r\n  MC_VERSION=$(curl -sSL https:\/\/meta.fabricmc.net\/v2\/versions\/game | jq -r '.[] | select(.stable== true )|.version' | head -n1)\r\nelif [ \"$MC_VERSION\" == \"snapshot\" ]; then\r\n  MC_VERSION=$(curl -sSL https:\/\/meta.fabricmc.net\/v2\/versions\/game | jq -r '.[] | select(.stable== false )|.version' | head -n1)\r\nfi\r\n\r\nif [ -z \"$FABRIC_VERSION\" ] || [ \"$FABRIC_VERSION\" == \"latest\" ]; then\r\n  FABRIC_VERSION=$(curl -sSL https:\/\/meta.fabricmc.net\/v2\/versions\/installer | jq -r '.[0].version')\r\nfi\r\n\r\nif [ -z \"$LOADER_VERSION\" ] || [ \"$LOADER_VERSION\" == \"latest\" ]; then\r\n  LOADER_VERSION=$(curl -sSL https:\/\/meta.fabricmc.net\/v2\/versions\/loader | jq -r '.[] | select(.stable== true )|.version' | head -n1)\r\nelif [ \"$LOADER_VERSION\" == \"snapshot\" ]; then\r\n  LOADER_VERSION=$(curl -sSL https:\/\/meta.fabricmc.net\/v2\/versions\/loader | jq -r '.[] | select(.stable== false )|.version' | head -n1)\r\nfi\r\n\r\nwget -O fabric-installer.jar https:\/\/maven.fabricmc.net\/net\/fabricmc\/fabric-installer\/$FABRIC_VERSION\/fabric-installer-$FABRIC_VERSION.jar\r\njava -jar fabric-installer.jar server -mcversion $MC_VERSION -loader $LOADER_VERSION -downloadMinecraft\r\n\r\necho -e \"Fabric installation complete. Downloading MSH now!\"\r\n\r\narch=$(uname -m)\r\n\r\nif [[ $arch == x86_64* ]]; then\r\n    echo \"MSH: X64 Architecture\"\r\n    echo -e \"Running curl -o msh_server.bin ${MSH_D_URL}msh-linux-amd64.bin\"\r\n    curl -o msh_server.bin ${MSH_D_URL}msh-linux-amd64.bin\r\n  elif  [[ $arch == aarch64* ]]; then\r\n    echo \"MSH: aarch64 Architecture\"\r\n    echo -e \"Running curl -o msh_server.bin ${MSH_D_URL}msh-linux-arm64.bin\"\r\n    curl -o msh_server.bin ${MSH_D_URL}msh-linux-arm64.bin\r\n  elif  [[ $arch == arm* ]]; then\r\n    echo \"MSH: ARM not V8 is not supported...\"\r\n  elif  [[ $arch == unknown* ]]; then\r\n    echo \"MSH: Architecture dedection failed...\"\r\n    return 1\r\nfi\r\n\r\nchmod u+x .\/msh_server.bin\r\n\r\nif [ ! -f server.properties ]; then\r\n    echo -e \"Downloading default MC server.properties\"\r\n    curl -o server.properties https:\/\/raw.githubusercontent.com\/parkervcp\/eggs\/master\/minecraft\/java\/server.properties\r\nfi\r\n\r\nif [ ! -f msh-config.json ]; then\r\n    echo -e \"Downloading MSH msh-config.json\"\r\n    curl -o msh-config.json https:\/\/raw.githubusercontent.com\/gekware\/minecraft-server-hibernation\/master\/msh-config.json\r\n    sed -i -e 's\/{path\\\/to\\\/server\\\/folder}\/.\\\/\/g' msh-config.json\r\n    sed -i -e 's\/{server.jar}\/server.jar\/g' msh-config.json\r\nfi\r\n\r\necho -e \"Install finished\"",
+            "container": "openjdk:11-jdk-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Server Jar File",
+            "description": "The name of the server jarfile to run the server with.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "fabric-server-launch.jar",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/",
+            "field_type": "text"
+        },
+        {
+            "name": "Minecraft Version",
+            "description": "The version of Minecraft to install. Use \"latest\" to install the latest version, or use \"snapshot\" to install the latest snapshot.",
+            "env_variable": "MC_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|between:3,15",
+            "field_type": "text"
+        },
+        {
+            "name": "Fabric Version",
+            "description": "The version of Fabric to install. Use \"latest\" to install the latest version.",
+            "env_variable": "FABRIC_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|between:3,15",
+            "field_type": "text"
+        },
+        {
+            "name": "Fabric Loader Version",
+            "description": "The version of Fabric Loader to install. Use \"latest\" to install the latest version.",
+            "env_variable": "LOADER_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|between:3,15",
+            "field_type": "text"
+        },
+        {
+            "name": "MSH-Download URL",
+            "description": "Webserver that serves the binary file of MSH",
+            "env_variable": "MSH_D_URL",
+            "default_value": "https:\/\/msh.gekware.net\/builds\/egg\/",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Wait time for shutdown",
+            "description": "This is the time in seconds the server should stay online without players",
+            "env_variable": "TBSES",
+            "default_value": "120",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|integer|between:0,60000",
+            "field_type": "text"
+        },
+        {
+            "name": "TimeToKill",
+            "description": "This is the time, MSH will kill the server after sending a stop event and \/save-all",
+            "env_variable": "KILL_TIME",
+            "default_value": "30",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|integer|between:0,60000",
+            "field_type": "text"
+        },
+        {
+            "name": "Debug Level",
+            "description": "Debug Level for MSH. 1-4,  0 - NONE: no log, 1 - BASE: basic log, 2 - SERV: minecraft server log, 3 - DEVE: developement log, 4 - BYTE: connection bytes log",
+            "env_variable": "DEBUG_LVL",
+            "default_value": "3",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1,4",
+            "field_type": "text"
+        },
+        {
+            "name": "Hib-Info",
+            "description": "MOTD when the server is currently not running",
+            "env_variable": "HIB_INFO",
+            "default_value": "Currently not working",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:200",
+            "field_type": "text"
+        },
+        {
+            "name": "Hib-Starting",
+            "description": "MOTD when the minecraft server is starting",
+            "env_variable": "HIB_START",
+            "default_value": "Currently not working",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:200",
+            "field_type": "text"
+        },
+        {
+            "name": "SuspendAllow",
+            "description": "When set to true (1) msh will not run \/stop, it will hibernate the process. This should free up system memory and put the server into swap (More info: https:\/\/wiki.archlinux.org\/title\/Power_management\/Suspend_and_hibernate)",
+            "env_variable": "SUSPEND_ALLOW",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "SuspendRefresh",
+            "description": "Enables refresh of minecraft server suspension every set seconds. This is done to avoid watchdog crash at unsuspension, as Minecraft will think it has crashed if it has been suspended a long time. \r\nReduce the value to avoid crashes or set max-tick-time in server.properties to -1. \r\nSet to -1 to disable suspendrefresh.",
+            "env_variable": "SUSPEND_REFRESH",
+            "default_value": "120",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:-1,60000",
+            "field_type": "text"
+        },
+        {
+            "name": "wlimport",
+            "description": "When set to true (1) msh will import the servers whitelist. This only starts the server when a player from the whitelist is trying to connect",
+            "env_variable": "WL_IMPORT",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        }
+    ]
+}
