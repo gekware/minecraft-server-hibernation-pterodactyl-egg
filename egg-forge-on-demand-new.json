@@ -157,7 +157,7 @@
             "name": "SuspendAllow",
             "description": "When set to true (1) msh will not run \/stop, it will hibernate the process. This should free up system memory and put the server into swap (More info: https:\/\/wiki.archlinux.org\/title\/Power_management\/Suspend_and_hibernate)",
             "env_variable": "SUSPEND_ALLOW",
-            "default_value": "1",
+            "default_value": "0",
             "user_viewable": true,
             "user_editable": false,
             "rules": "required|boolean",
