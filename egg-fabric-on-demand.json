@@ -21,7 +21,7 @@
     "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} -allowkill {{KILL_TIME}} -timeout {{TBSES}} -suspendrefresh {{SUSPEND_REFRESH}} $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -suspendallow\")",
     "config": {
         "files": "{\r\n    \"msh-config.json\": {\r\n        \"parser\": \"json\",\r\n        \"find\": {\r\n            \"StartServer\": \"java <Commands.StartServerParam>\",\r\n            \"FileName\": \"{{env.SERVER_JARFILE}}\",\r\n            \"Port\": \"{{server.build.default.port}}\",\r\n            \"Commands.StartServerParam\": \"-Xms128M -Xmx{{server.build.memory}}M\"\r\n        }\r\n    },\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"25565\"\r\n        }\r\n    }\r\n}",
-        "startup": "{\r\n    \"done\": \"listening for new clients connections on\"\r\n}",
+        "startup": "{\r\n    \"done\": \"listening for new clients\"\r\n}",
         "logs": "{}",
         "stop": "^C"
     },
