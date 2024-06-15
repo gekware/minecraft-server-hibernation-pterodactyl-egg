@@ -12,15 +12,10 @@
         "eula"
     ],
     "docker_images": {
-        "Java 21 (>1.20.5)": "ghcr.io\/pterodactyl\/yolks:java_21",
-        "Java 17 (>1.18)": "ghcr.io\/pterodactyl\/yolks:java_17",
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
         "Java 17J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_17J9",
-        "Java 16 (>1.17)": "ghcr.io\/pterodactyl\/yolks:java_16",
-        "Java 16J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_16J9",
-        "Java 11 (>1.16)": "ghcr.io\/pterodactyl\/yolks:java_11",
-        "Java 11J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_11J9",
-        "Java 8 (<1.16)": "ghcr.io\/pterodactyl\/yolks:java_8",
-        "Java 8J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_8J9"
+        "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
+        "Java 16J9 (Less RAM Usage)": "ghcr.io\/pterodactyl\/yolks:java_16J9"
     },
     "file_denylist": [],
     "startup": ".\/msh_server.bin -port {{SERVER_PORT}} -d {{DEBUG_LVL}} -file {{SERVER_JARFILE}} -allowkill {{KILL_TIME}} -timeout {{TBSES}} -suspendrefresh {{SUSPEND_REFRESH}} $( [[ ${WL_IMPORT} -eq 1 ]] && echo \" -wlimport\") $( [[ ${SUSPEND_ALLOW} -eq 1 ]] && echo \" -suspendallow\")",
